@@ -53,8 +53,18 @@ unitlist = row_units + column_units + square_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 ```
+【sum用法】
 ### 1.3 记录方式转换
 ```py
 def grid_values(grid):
     return dict(zip(boxes, grid))
 ```
+`zip()` 将可迭代的对象作为参数，把对象中对应的元素打包成一个个元组，然后返回由这些元组组成的列表
+
+## 二、策略1：过滤淘汰
+
+
+## 三、策略2：唯一可选
+
+
+## 四、策略3：约束搜索
