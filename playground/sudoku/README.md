@@ -108,5 +108,16 @@ def eliminate(values):
 单行的九个方格，单列的九个方格，或3*3的九个方格，也可以说一个规则单元包含了三个最小规则单元。
 ## 三、策略2：唯一可选
 根据最小规则单元，进一步缩小规则同胞中待填数的取值范围，便引出了第二条规则：**唯一可选策略**
+【图2】
+> 如果最小规则单元中，只有一个方格出现了某个数字，那么这个方格就该填这个数字
 
+```py
+def only_choice(values):
+    for unit in unitlist:
+        for digit in '123456789':
+            places = [box for box in unit if digit in values[box]]
+            if len(places) == 1:
+                values[places[0]] = digit
+    return values
+```
 ## 四、策略3：约束搜索
