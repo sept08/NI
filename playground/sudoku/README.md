@@ -1,9 +1,11 @@
 # 数独与AI
 
+[Github仓库地址](https://github.com/sept08/NI/tree/master/playground/sudoku)
+
 学习是为了寻找解决问题的答案，若脱离了问题只为知晓而进行的打call，那么随时间流逝所沉淀下来的，估计就只有“重在参与”的虚幻存在感了，自学的人就更应善于发现可供解决的问题。为了入门AI，定个小目标，解决数独问题。
 ## 一、问题描述
 
-【图1】
+![sudoku](./sudoku01.png)
 
 一个9*9的方格中，部分方格已预先填入数字，目的是按照如下规则将空白方格填上1-9中的一个：
 1.  每个方格中填且仅填一个数字，数字取值范围1-9
@@ -54,7 +56,7 @@ unitlist = row_units + column_units + square_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 ```
-【sum用法】
+
 ### 1.3 记录方式转换
 ```py
 def grid_values(grid):
@@ -108,7 +110,7 @@ def eliminate(values):
 单行的九个方格，单列的九个方格，或3*3的九个方格，也可以说一个规则单元包含了三个最小规则单元。
 ## 三、策略2：唯一可选
 根据最小规则单元，进一步缩小规则同胞中待填数的取值范围，便引出了第二条规则：**唯一可选策略**
-【图2】
+![sudoku](./sudoku02.png)
 > 如果最小规则单元中，只有一个方格出现了某个数字，那么这个方格就该填这个数字
 
 ```py
