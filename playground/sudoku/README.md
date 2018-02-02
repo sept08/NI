@@ -120,4 +120,41 @@ def only_choice(values):
                 values[places[0]] = digit
     return values
 ```
+交替使用**过滤淘汰策略**和**唯一可选策略**便可将数独问题中，所有待填数方格的取值范围缩减至最小，但由于这两种策略循环使用的终止条件，是不再有新确定的填数方格出现，所以这并不充分能解决所有数独问题。
+```py
+def reduce_puzzle(values):
+    stalled = False
+    while not stalled:
+        solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
+        values = eliminate(values)
+        values = only_choice(values)
+        solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
+        stalled = solved_values_before == solved_values_after
+        if len([box for box in values.keys() if len(values[box]) == 0]):
+            return False
+    return values
+```
 ## 四、策略3：约束搜索
+对于方格预设数字比较多的数独问题，或许可以直接通过上述缩减取值范围的方法解决。但当所给预设数字方格比较少时，在完成取值范围缩小后，必然还会有一些取值不确定的方格存在。如此问题的求解，就需要从多个可选值的方格中，分别假定其中一个进行搜索。
+
+而此处针对进一步的搜索，有两个问题需要考虑：
+1.  如何选取搜索起点方格？
+2.  确定哪种搜索策略：深度优先搜索，广度优先搜索？
+
+关于第一个问题，无论选择哪个方格起始搜索，对于能否解决问题来说并不存在差异。而从求解过程的性能和效率来考虑，就有了差别。而在思考第二个问题之前，还需要明确一点：数独问题的解是否唯一？显然如果预设的方格过多且彼此矛盾，问题必然无解，而预设的方格过少，势必也会存在多个满足规则的解。所以为了优先求得一个确定解，我们采取深度优先搜索，而若是求可能的所有解，多线程进行广度优先搜索，可以获得较好的时间复杂度，但却需要暂存许多中间信息。
+```py
+def search(values):
+    values = reduce_puzzle(values)
+    if values is False:
+        return False
+    if all(len(values[s]) == 1 for s in boxes):
+        return values
+    n,s = min((len(values[s]), s) for s in boxes if len(values[s]) > 1)
+    for value in values[s]:
+        new_values = values.copy()
+        new_values[s] = value
+        attemp = search(new_values)
+        if attemp:
+            return attemp
+```
+如此数独问题得解，但能解决速度问题的程序就能成为AI么？
